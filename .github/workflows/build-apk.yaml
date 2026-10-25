@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: write # Nécessaire pour créer la Release et y attacher l'APK
+      contents: write # Needed to create a release
 
     steps:
       - name: Checkout code
@@ -25,14 +25,16 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Build Debug APK
-        run: ./gradlew assembleDebug
+      - name: Rename APK
+        run: |
+          mkdir -p dist
+          cp app/build/outputs/apk/debug/app-debug.apk dist/FamilyPdfReader-${{ github.ref_name }}.apk
 
       - name: Create GitHub Release and Upload APK
         uses: softprops/action-gh-release@v2
         with:
-          files: app/build/outputs/apk/debug/app-debug.apk
+          files: dist/FamilyPdfReader-*.apk
           name: FamilyPdfReader ${{ github.ref_name }}
-          body: "Application de lecture de PDF familiaux pour Android. Téléchargez l'APK ci-dessous pour l'installer directement sur votre téléphone !"
+          body: "PDF reader app for Android. Download the APK below to install it directly on your phone!"
           draft: false
           prerelease: false
